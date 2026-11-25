@@ -16,7 +16,7 @@ velocity_y = 0
 
 speed = 5
 gravity = 0.3
-jump_force = -10
+jump_force = -9
 
 on_ground = False
 
@@ -34,11 +34,27 @@ dash_timer = 0
 ground = pygame.Rect(0, 850, 1600, 50)
 
 platforms = [
-    pygame.Rect(450, 720, 140, 20),
-    pygame.Rect(700, 620, 130, 20),
-    pygame.Rect(1000, 680, 140, 20),
-    pygame.Rect(1250, 550, 130, 20)
+    # Parcours principal
+    pygame.Rect(130, 770, 110, 15),
+    pygame.Rect(300, 690, 90, 15),
+    pygame.Rect(130, 610, 100, 15),
+
+    # Grande branche
+    pygame.Rect(420, 500, 190, 18),
+
+    # Petit détour facultatif
+    pygame.Rect(900, 650, 100, 15),
+    pygame.Rect(1080, 560, 90, 15),
+
+    # Dernière ascension
+    pygame.Rect(920, 430, 110, 15),
+    pygame.Rect(1250, 350, 100, 15),
+    pygame.Rect(1460, 240, 110, 15)
 ]
+
+#caméra
+camera_x = 0
+world_width = 3200
 
 # Boucle du jeu
 running = True
@@ -113,6 +129,11 @@ while running:
 
     player_rect = pygame.Rect(x, y, 50, 50)
 
+    #mouvement de la caméra
+    target_camera = max(0, x - 1200)
+
+    camera_x += (target_camera - camera_x) * 0.1
+
     # Sol + plateformes
     all_platforms = [ground] + platforms
 
@@ -138,10 +159,12 @@ while running:
     pygame.draw.rect(screen, (70, 110, 65), ground)
 
     for platform in platforms:
-        pygame.draw.rect(screen, (100, 150, 80), platform)
+        screen_rect = platform.move(-camera_x, 0)
+        pygame.draw.rect(screen, (100, 160, 100), screen_rect)
 
     # Dessin du personnage
-    pygame.draw.rect(screen, (255, 0, 0), (x, y, 50, 50))
+    pygame.draw.rect(screen, (255, 0, 0),
+    (x - camera_x, y, 50, 50))
 
     pygame.display.flip()
     clock.tick(60)
