@@ -1,4 +1,4 @@
-
+# Créé par nelson3, le 25/11/2026 en Python 3.7
 import pygame
 pygame.init()
 
@@ -20,6 +20,9 @@ jump_force = -9
 
 on_ground = False
 
+# Position d'arrivé
+player_end = (1525, 240, 50, 100)
+
 # Dash : pas encore debloque
 dash_unlocked = False
 dash_available = False
@@ -29,6 +32,9 @@ dash_duration = 10
 is_dashing = False
 dash_direction = 0
 dash_timer = 0
+
+    # Mur
+wall = pygame.Rect(1550, 250, 75, 600),
 
 # Terrain
 ground = pygame.Rect(0, 850, 1600, 50)
@@ -49,7 +55,7 @@ platforms = [
     # Dernière ascension
     pygame.Rect(920, 430, 110, 15),
     pygame.Rect(1250, 350, 100, 15),
-    pygame.Rect(1460, 240, 110, 15)
+    pygame.Rect(1515, 240, 110, 15)
 ]
 
 #caméra
@@ -129,8 +135,14 @@ while running:
 
     player_rect = pygame.Rect(x, y, 50, 50)
 
+    # Arrivé
+    player_rect = pygame.Rect(x, y, 50, 50)
+
+    if player_rect.colliderect(player_end):
+        print("Niveau terminé")
+
     #mouvement de la caméra
-    target_camera = max(0, x - 1200)
+    target_camera = max(0, x - 1550)
 
     camera_x += (target_camera - camera_x) * 0.1
 
@@ -142,7 +154,7 @@ while running:
         if (velocity_y >= 0
             and previous_bottom <= platform.top
             and player_rect.bottom >= platform.top
-            and player_rect.right > platform.left
+            and player_rect.right >= platform.left
             and player_rect.left < platform.right):
 
             y = platform.top - 50
@@ -161,6 +173,8 @@ while running:
     for platform in platforms:
         screen_rect = platform.move(-camera_x, 0)
         pygame.draw.rect(screen, (100, 160, 100), screen_rect)
+
+    pygame.draw.rect(screen, (0, 255, 0), player_end)
 
     # Dessin du personnage
     pygame.draw.rect(screen, (255, 0, 0),
